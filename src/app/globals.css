@@ -1,0 +1,74 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 5% 17%;
+    --foreground: 210 40% 98%;
+    --card: 220 5% 22%;
+    --card-foreground: 210 40% 98%;
+    --popover: 220 5% 17%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 243 75% 61%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 27.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 27.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 255 92% 77%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 25.5%;
+    --input: 217.2 32.6% 25.5%;
+    --ring: 243 75% 61%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 220 5% 17%;
+    --foreground: 210 40% 98%;
+    --card: 220 5% 22%;
+    --card-foreground: 210 40% 98%;
+    --popover: 220 5% 17%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 243 75% 61%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 27.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 27.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 255 92% 77%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 25.5%;
+    --input: 217.2 32.6% 25.5%;
+    --ring: 243 75% 61%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Hide Next.js development indicator */
+iframe#__next_launcher_error_indicator_container {
+  display: none !important;
+}
+
+nextjs-portal {
+  display: none !important;
+}

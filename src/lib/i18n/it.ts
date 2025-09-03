@@ -1,0 +1,111 @@
+
+export const it = {
+  header: {
+    addCard: 'Aggiungi Carta',
+    searchAll: 'Cerca Tutto',
+    import: 'Importa',
+    export: 'Esporta',
+    printPdf: 'Stampa PDF',
+  },
+  table: {
+    image: 'Immagine',
+    cardName: 'Nome Carta',
+    quantity: 'Quantità',
+    provider: 'Provider',
+    actions: 'Azioni',
+  },
+  card: {
+    placeholder: 'Inserisci nome carta...',
+    selectProvider: 'Seleziona provider',
+    search: 'Cerca',
+    remove: 'Rimuovi',
+    notFound: 'Nessuna carta trovata',
+    fetchError: 'Errore nel recupero',
+    scryfallSettings: 'Impostazioni ricerca Scryfall'
+  },
+  modal: {
+    title: 'Trovate più carte per "{query}"',
+    searchAgain: 'Cerca di Nuovo',
+    filterPlaceholder: 'Filtra per nome, set, o artista...',
+    noFilterResults: 'Nessuna carta corrisponde al tuo filtro.',
+    close: 'Chiudi',
+  },
+  scryfallModal: {
+    title: 'Opzioni di Ricerca Scryfall',
+    unique: 'Ometti carte simili',
+    order: 'Ordina carte per',
+    dir: 'Direzione ordinamento',
+    include_extras: 'Includi extra (token, ecc.)',
+    include_multilingual: 'Includi carte multilingua',
+    include_variations: 'Includi varianti rare',
+    save: 'Salva',
+    cancel: 'Annulla',
+    uniqueOptions: {
+      cards: 'Carte',
+      art: 'Arte',
+      prints: 'Stampe',
+    },
+    orderOptions: {
+      name: 'Nome',
+      set: 'Set',
+      released: 'Data di rilascio',
+      rarity: 'Rarità',
+      color: 'Colore',
+      usd: 'Prezzo USD',
+      tix: 'Prezzo TIX',
+      eur: 'Prezzo EUR',
+      cmc: 'CMC',
+      power: 'Forza',
+      toughness: 'Costituzione',
+      edhrec: 'Rank EDHREC',
+      artist: 'Artista',
+    },
+    dirOptions: {
+      auto: 'Auto',
+      asc: 'Ascendente',
+      desc: 'Discendente',
+    }
+  },
+  printPreview: {
+    title: 'Anteprima di Stampa',
+    backToEditor: 'Torna all\'Editor',
+    saveAsPdf: 'Salva come PDF',
+    noCardsTitle: 'Nessuna Carta da Stampare',
+    noCardsMessage: 'Torna all\'editor per aggiungere delle carte.',
+  },
+  toast: {
+    searchingAll: {
+      title: 'Ricerca di tutte le carte in corso...',
+      description: 'Attendere prego, stiamo recuperando i dati delle carte.',
+    },
+    searchComplete: {
+      title: 'Ricerca completata!',
+      description: 'Tutte le carte sono state elaborate.',
+    },
+    searchFailed: {
+      title: 'Ricerca fallita',
+      description: 'Si è verificato un errore durante la ricerca delle carte.',
+      cardNotFound: 'Impossibile trovare la carta: {query}',
+    },
+    noCardsToPrint: {
+      title: 'Nessuna carta da stampare',
+      description: 'Aggiungi e trova delle carte prima di stampare.',
+    },
+    noCardsToExport: {
+      title: 'Nessuna carta da esportare',
+      description: 'Aggiungi delle carte prima di esportare.',
+    },
+    exportSuccess: {
+      title: 'Esportazione riuscita',
+      description: 'La tua lista di carte è stata salvata.',
+    },
+    importSuccess: {
+      title: 'Importazione riuscita',
+      description: 'La tua lista di carte è stata caricata.',
+    },
+    importFailed: {
+      title: 'Importazione fallita',
+      description: 'Il file selezionato non è un file XLSX valido.',
+    },
+  },
+};
