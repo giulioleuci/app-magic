@@ -24,6 +24,13 @@ export const it = {
     scryfallSettings: 'Impostazioni ricerca Scryfall',
     pokemonTcgSettings: 'Impostazioni ricerca Pokemon TCG'
   },
+  providers: {
+    scryfall: 'Scryfall',
+    pokemontcg: 'Pokemon TCG',
+  },
+  loadingModal: {
+    slowServiceWarning: 'Questo servizio è lento, la ricerca può richiedere diversi secondi. Attendi...',
+  },
   modal: {
     title: 'Trovate più carte per "{query}"',
     searchAgain: 'Cerca di Nuovo',

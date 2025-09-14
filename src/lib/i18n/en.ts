@@ -24,6 +24,13 @@ export const en = {
     scryfallSettings: 'Scryfall search settings',
     pokemonTcgSettings: 'Pokemon TCG search settings'
   },
+  providers: {
+    scryfall: 'Scryfall',
+    pokemontcg: 'Pokemon TCG',
+  },
+  loadingModal: {
+    slowServiceWarning: 'This service is slow, the search may take several seconds. Please wait...',
+  },
   modal: {
     title: 'Multiple cards found for "{query}"',
     searchAgain: 'Search Again',

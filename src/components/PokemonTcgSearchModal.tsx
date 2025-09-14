@@ -47,7 +47,7 @@ export default function PokemonTcgSearchModal({ options, onSave, onClose }: Poke
             <Label htmlFor="order" className="text-right">{t('pokemonTcgModal.order')}</Label>
             <Select
               value={currentOptions.order}
-              onValueChange={(value: PokemonTcgSearchOptions['order']) => setCurrentOptions(prev => ({...prev, order: value}))}
+              onValueChange={(value) => setCurrentOptions(prev => ({...prev, order: value as PokemonTcgSearchOptions['order']}))}
             >
               <SelectTrigger id="order" className="col-span-3">
                 <SelectValue placeholder="Select..." />
@@ -64,7 +64,7 @@ export default function PokemonTcgSearchModal({ options, onSave, onClose }: Poke
             <Label htmlFor="dir" className="text-right">{t('pokemonTcgModal.dir')}</Label>
             <Select
               value={currentOptions.dir}
-              onValueChange={(value: PokemonTcgSearchOptions['dir']) => setCurrentOptions(prev => ({...prev, dir: value}))}
+              onValueChange={(value) => setCurrentOptions(prev => ({...prev, dir: value as PokemonTcgSearchOptions['dir']}))}
             >
               <SelectTrigger id="dir" className="col-span-3">
                 <SelectValue placeholder="Select..." />

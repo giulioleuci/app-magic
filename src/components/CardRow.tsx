@@ -2,6 +2,7 @@
 
 import { availableProviders } from "@/api/providers";
 import { useCardContext } from "@/context/CardContext";
+import { useSearch } from "@/context/SearchContext";
 import { useCardSearch } from "@/hooks/useCardSearch";
 import type { CardRow, NormalizedCard, ScryfallSearchOptions, PokemonTcgSearchOptions } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ interface CardRowProps {
 export default function CardRowComponent({ row }: CardRowProps) {
   const { dispatch } = useCardContext();
   const { search } = useCardSearch();
+  const { setIsSearching, setProviderId } = useSearch();
   const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
   const [isScryfallSettingsOpen, setIsScryfallSettingsOpen] = useState(false);
   const [isPokemonTcgSettingsOpen, setIsPokemonTcgSettingsOpen] = useState(false);
@@ -42,6 +44,8 @@ export default function CardRowComponent({ row }: CardRowProps) {
   const handleSearch = async () => {
     if (!row.query) return;
     dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'loading' } });
+    setIsSearching(true);
+    setProviderId(row.providerId);
     try {
         const options = {
             scryfall: row.scryfallSearchOptions,
@@ -58,6 +62,8 @@ export default function CardRowComponent({ row }: CardRowProps) {
         }
     } catch (e) {
         dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'error', error: t('card.fetchError') } });
+    } finally {
+        setIsSearching(false);
     }
   };
 
@@ -182,7 +188,7 @@ export default function CardRowComponent({ row }: CardRowProps) {
             </SelectTrigger>
             <SelectContent>
               {availableProviders.map(p => (
-                <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                <SelectItem key={p.id} value={p.id}>{t(`providers.${p.id}` as any)}</SelectItem>
               ))}
             </SelectContent>
           </Select>
