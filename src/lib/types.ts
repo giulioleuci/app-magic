@@ -13,6 +13,11 @@ export interface ScryfallSearchOptions {
   include_variations?: boolean;
 }
 
+export interface PokemonTcgSearchOptions {
+  order?: 'name' | 'set.releaseDate' | 'set.name' | 'number' | 'artist' | 'rarity' | 'nationalPokedexNumbers';
+  dir?: 'asc' | 'desc';
+}
+
 export interface NormalizedCard {
   id: string;
   name: string;
@@ -34,6 +39,7 @@ export interface CardRow {
   card: NormalizedCard | null;
   searchResults?: NormalizedCard[] | null;
   scryfallSearchOptions?: ScryfallSearchOptions;
+  pokemonTcgSearchOptions?: PokemonTcgSearchOptions;
   status: 'idle' | 'loading' | 'found' | 'error' | 'multiple';
   error?: string | null;
 }

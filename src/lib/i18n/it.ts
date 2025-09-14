@@ -21,7 +21,8 @@ export const it = {
     remove: 'Rimuovi',
     notFound: 'Nessuna carta trovata',
     fetchError: 'Errore nel recupero',
-    scryfallSettings: 'Impostazioni ricerca Scryfall'
+    scryfallSettings: 'Impostazioni ricerca Scryfall',
+    pokemonTcgSettings: 'Impostazioni ricerca Pokemon TCG'
   },
   modal: {
     title: 'Trovate più carte per "{query}"',
@@ -62,6 +63,30 @@ export const it = {
     },
     dirOptions: {
       auto: 'Auto',
+      asc: 'Ascendente',
+      desc: 'Discendente',
+    }
+  },
+  pokemonTcgModal: {
+    title: 'Opzioni di Ricerca Pokemon TCG',
+    order: 'Ordina carte per',
+    dir: 'Direzione ordinamento',
+    save: 'Salva',
+    cancel: 'Annulla',
+    apiInfo: {
+      title: 'Informazioni API',
+      description: 'Questa ricerca utilizza l\'API pubblica di Pokemon TCG senza una chiave API. Per evitare limiti di velocità, si prega di cercare in modo responsabile.',
+    },
+    orderOptions: {
+      name: 'Nome',
+      'set.releaseDate': 'Data di rilascio',
+      'set.name': 'Nome Set',
+      number: 'Numero Carta',
+      artist: 'Artista',
+      rarity: 'Rarità',
+      nationalPokedexNumbers: 'Numero Pokedex',
+    },
+    dirOptions: {
       asc: 'Ascendente',
       desc: 'Discendente',
     }

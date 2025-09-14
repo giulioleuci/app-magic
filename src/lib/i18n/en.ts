@@ -21,7 +21,8 @@ export const en = {
     remove: 'Remove',
     notFound: 'No cards found',
     fetchError: 'Failed to fetch',
-    scryfallSettings: 'Scryfall search settings'
+    scryfallSettings: 'Scryfall search settings',
+    pokemonTcgSettings: 'Pokemon TCG search settings'
   },
   modal: {
     title: 'Multiple cards found for "{query}"',
@@ -62,6 +63,30 @@ export const en = {
     },
     dirOptions: {
       auto: 'Auto',
+      asc: 'Ascending',
+      desc: 'Descending',
+    }
+  },
+  pokemonTcgModal: {
+    title: 'Pokemon TCG Search Options',
+    order: 'Sort cards by',
+    dir: 'Sort direction',
+    save: 'Save',
+    cancel: 'Cancel',
+    apiInfo: {
+      title: 'API Information',
+      description: 'This search uses the public Pokemon TCG API without an API key. To avoid rate limits, please search responsibly.',
+    },
+    orderOptions: {
+      name: 'Name',
+      'set.releaseDate': 'Release Date',
+      'set.name': 'Set Name',
+      number: 'Card Number',
+      artist: 'Artist',
+      rarity: 'Rarity',
+      nationalPokedexNumbers: 'Pokedex Number',
+    },
+    dirOptions: {
       asc: 'Ascending',
       desc: 'Descending',
     }
