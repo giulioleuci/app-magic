@@ -32,7 +32,7 @@ export default function SearchLoadingModal() {
           ))}
         </div>
         {providerId === 'pokemontcg' && (
-          <Alert variant="destructive">
+          <Alert variant="destructive" className="bg-destructive text-destructive-foreground [&>svg]:text-destructive-foreground">
             <AlertTitle>{t('pokemonTcgModal.apiInfo.title')}</AlertTitle>
             <AlertDescription>
               {t('loadingModal.slowServiceWarning')}
