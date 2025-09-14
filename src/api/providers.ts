@@ -1,9 +1,8 @@
-
 import type { Provider } from "@/lib/types";
 
-export const availableProviders: Provider[] = [
-  { id: 'scryfall', name: 'Scryfall' },
-  // Future providers can be added here
+export const availableProviders: Omit<Provider, 'name'>[] = [
+  { id: 'scryfall' },
+  { id: 'pokemontcg' },
 ];
 
 export const defaultProviderId = availableProviders[0].id;

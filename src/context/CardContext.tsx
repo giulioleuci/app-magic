@@ -29,16 +29,18 @@ const initialState: State = {
 const cardReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'ADD_ROW':
+      const lastRow = state.rows[state.rows.length - 1];
       const newRow: CardRow = {
         id: generateId(),
         query: '',
         quantity: 1,
-        providerId: defaultProviderId,
+        providerId: lastRow ? lastRow.providerId : defaultProviderId,
         card: null,
         scryfallSearchOptions: {
           unique: 'prints',
           include_extras: true,
         },
+        pokemonTcgSearchOptions: {},
         status: 'idle',
       };
       return { ...state, rows: [...state.rows, newRow] };

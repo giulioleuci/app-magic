@@ -1,10 +1,10 @@
-
 "use client";
 
 import { availableProviders } from "@/api/providers";
 import { useCardContext } from "@/context/CardContext";
+import { useSearch } from "@/context/SearchContext";
 import { useCardSearch } from "@/hooks/useCardSearch";
-import type { CardRow, NormalizedCard, ScryfallSearchOptions } from "@/lib/types";
+import type { CardRow, NormalizedCard, ScryfallSearchOptions, PokemonTcgSearchOptions } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -17,6 +17,7 @@ import { useState } from "react";
 import CardSelectionModal from "./CardSelectionModal";
 import { useLanguage } from "@/context/LanguageContext";
 import ScryfallSearchModal from "./ScryfallSearchModal";
+import PokemonTcgSearchModal from "./PokemonTcgSearchModal";
 import Link from "next/link";
 
 interface CardRowProps {
@@ -26,8 +27,10 @@ interface CardRowProps {
 export default function CardRowComponent({ row }: CardRowProps) {
   const { dispatch } = useCardContext();
   const { search } = useCardSearch();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSearchSettingsOpen, setIsSearchSettingsOpen] = useState(false);
+  const { setIsSearching, setProviderId } = useSearch();
+  const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
+  const [isScryfallSettingsOpen, setIsScryfallSettingsOpen] = useState(false);
+  const [isPokemonTcgSettingsOpen, setIsPokemonTcgSettingsOpen] = useState(false);
   const { t } = useLanguage();
 
   const handleUpdate = (updates: Partial<Omit<CardRow, 'id'>>) => {
@@ -41,18 +44,26 @@ export default function CardRowComponent({ row }: CardRowProps) {
   const handleSearch = async () => {
     if (!row.query) return;
     dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'loading' } });
+    setIsSearching(true);
+    setProviderId(row.providerId);
     try {
-        const searchResults = await search(row.query, row.scryfallSearchOptions);
+        const options = {
+            scryfall: row.scryfallSearchOptions,
+            pokemontcg: row.pokemonTcgSearchOptions,
+        }
+        const searchResults = await search(row.providerId, row.query, options);
         if (searchResults && searchResults.length === 1) {
             dispatch({ type: 'SET_CARD_DATA', payload: { id: row.id, card: searchResults[0], searchResults: [searchResults[0]] } });
         } else if (searchResults && searchResults.length > 1) {
             dispatch({ type: 'SET_SEARCH_RESULTS', payload: { id: row.id, searchResults } });
-            setIsModalOpen(true);
+            setIsSelectionModalOpen(true);
         } else {
             dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'error', error: t('card.notFound') } });
         }
     } catch (e) {
         dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'error', error: t('card.fetchError') } });
+    } finally {
+        setIsSearching(false);
     }
   };
 
@@ -63,18 +74,23 @@ export default function CardRowComponent({ row }: CardRowProps) {
 
   const handleCardSelect = (card: NormalizedCard) => {
     dispatch({ type: 'SET_CARD_DATA', payload: { id: row.id, card, searchResults: row.searchResults } });
-    setIsModalOpen(false);
+    setIsSelectionModalOpen(false);
   }
 
   const openChangeCardModal = () => {
     if (row.searchResults && row.searchResults.length > 1) {
-      setIsModalOpen(true);
+      setIsSelectionModalOpen(true);
     }
   }
 
-  const handleSearchOptionsSave = (options: ScryfallSearchOptions) => {
+  const handleScryfallSearchOptionsSave = (options: ScryfallSearchOptions) => {
     handleUpdate({ scryfallSearchOptions: options });
-    setIsSearchSettingsOpen(false);
+    setIsScryfallSettingsOpen(false);
+  };
+
+  const handlePokemonTcgSearchOptionsSave = (options: PokemonTcgSearchOptions) => {
+    handleUpdate({ pokemonTcgSearchOptions: options });
+    setIsPokemonTcgSettingsOpen(false);
   };
 
   return (
@@ -172,7 +188,7 @@ export default function CardRowComponent({ row }: CardRowProps) {
             </SelectTrigger>
             <SelectContent>
               {availableProviders.map(p => (
-                <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                <SelectItem key={p.id} value={p.id}>{t(`providers.${p.id}` as any)}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -180,12 +196,26 @@ export default function CardRowComponent({ row }: CardRowProps) {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" onClick={() => setIsSearchSettingsOpen(true)}>
+                  <Button variant="ghost" size="icon" onClick={() => setIsScryfallSettingsOpen(true)}>
                     <Settings2 className="h-5 w-5" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>{t('card.scryfallSettings')}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+          {row.providerId === 'pokemontcg' && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" onClick={() => setIsPokemonTcgSettingsOpen(true)}>
+                    <Settings2 className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t('card.pokemonTcgSettings')}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -200,19 +230,26 @@ export default function CardRowComponent({ row }: CardRowProps) {
           <Trash2 className="h-4 w-4" />
         </Button>
       </TableCell>
-      {isModalOpen && row.searchResults && (
+      {isSelectionModalOpen && row.searchResults && (
         <CardSelectionModal
           cards={row.searchResults}
           onCardSelect={handleCardSelect}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => setIsSelectionModalOpen(false)}
           query={row.query}
         />
       )}
-       {isSearchSettingsOpen && (
+       {isScryfallSettingsOpen && (
         <ScryfallSearchModal
           options={row.scryfallSearchOptions || {}}
-          onSave={handleSearchOptionsSave}
-          onClose={() => setIsSearchSettingsOpen(false)}
+          onSave={handleScryfallSearchOptionsSave}
+          onClose={() => setIsScryfallSettingsOpen(false)}
+        />
+      )}
+      {isPokemonTcgSettingsOpen && (
+        <PokemonTcgSearchModal
+          options={row.pokemonTcgSearchOptions || {}}
+          onSave={handlePokemonTcgSearchOptionsSave}
+          onClose={() => setIsPokemonTcgSettingsOpen(false)}
         />
       )}
     </TableRow>

@@ -40,7 +40,7 @@ export default function ScryfallSearchModal({ options, onSave, onClose }: Scryfa
             <Label htmlFor="unique" className="text-right">{t('scryfallModal.unique')}</Label>
             <Select
               value={currentOptions.unique}
-              onValueChange={(value: ScryfallSearchOptions['unique']) => setCurrentOptions(prev => ({...prev, unique: value}))}
+              onValueChange={(value) => setCurrentOptions(prev => ({...prev, unique: value as ScryfallSearchOptions['unique']}))}
             >
               <SelectTrigger id="unique" className="col-span-3">
                 <SelectValue placeholder="Select..." />
@@ -57,7 +57,7 @@ export default function ScryfallSearchModal({ options, onSave, onClose }: Scryfa
             <Label htmlFor="order" className="text-right">{t('scryfallModal.order')}</Label>
             <Select
               value={currentOptions.order}
-              onValueChange={(value: ScryfallSearchOptions['order']) => setCurrentOptions(prev => ({...prev, order: value}))}
+              onValueChange={(value) => setCurrentOptions(prev => ({...prev, order: value as ScryfallSearchOptions['order']}))}
             >
               <SelectTrigger id="order" className="col-span-3">
                 <SelectValue placeholder="Select..." />
@@ -74,7 +74,7 @@ export default function ScryfallSearchModal({ options, onSave, onClose }: Scryfa
             <Label htmlFor="dir" className="text-right">{t('scryfallModal.dir')}</Label>
             <Select
               value={currentOptions.dir}
-              onValueChange={(value: ScryfallSearchOptions['dir']) => setCurrentOptions(prev => ({...prev, dir: value}))}
+              onValueChange={(value) => setCurrentOptions(prev => ({...prev, dir: value as ScryfallSearchOptions['dir']}))}
             >
               <SelectTrigger id="dir" className="col-span-3">
                 <SelectValue placeholder="Select..." />

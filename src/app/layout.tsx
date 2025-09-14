@@ -5,6 +5,7 @@ import { CardProvider } from '@/context/CardContext';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { SearchProvider } from '@/context/SearchContext';
 
 export const metadata: Metadata = {
   title: 'ProxyForge Web',
@@ -26,9 +27,11 @@ export default function RootLayout({
       </head>
       <body className={cn('font-body antialiased', 'min-h-screen bg-background font-sans')}>
         <LanguageProvider>
-          <CardProvider>
-            {children}
-          </CardProvider>
+          <SearchProvider>
+            <CardProvider>
+              {children}
+            </CardProvider>
+          </SearchProvider>
         </LanguageProvider>
         <Toaster />
       </body>

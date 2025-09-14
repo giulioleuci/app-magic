@@ -3,6 +3,7 @@
 import { Plus, Search, FileDown, Printer, FileUp, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCardContext } from "@/context/CardContext";
+import { useSearch } from "@/context/SearchContext";
 import { useCardSearch } from "@/hooks/useCardSearch";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -20,6 +21,7 @@ import {
 export default function AppHeader() {
   const { state, dispatch } = useCardContext();
   const { search } = useCardSearch();
+  const { setIsSearching, setProviderId } = useSearch();
   const router = useRouter();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -30,20 +32,34 @@ export default function AppHeader() {
   };
 
   const handleSearchAll = async () => {
+    const rowsToSearch = state.rows.filter(row => row.query && row.status !== 'found');
+    if (rowsToSearch.length === 0) return;
+
+    // If any row uses pokemontcg, show the warning
+    if (rowsToSearch.some(row => row.providerId === 'pokemontcg')) {
+      setProviderId('pokemontcg');
+    } else {
+      setProviderId(''); // Reset providerId if no pokemontcg cards are being searched
+    }
+
+    setIsSearching(true);
     toast({ title: t('toast.searchingAll.title'), description: t('toast.searchingAll.description') });
-    const searchPromises = state.rows.map(async (row) => {
-      if (row.query && row.status !== 'found') {
-        dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'loading' } });
-        try {
-          const cardData = await search(row.query);
-          if (cardData && cardData.length > 0) {
-            dispatch({ type: 'SET_CARD_DATA', payload: { id: row.id, card: cardData[0], searchResults: cardData } });
-          } else {
-            dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'error', error: 'No cards found' } });
-          }
-        } catch (e) {
-          dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'error', error: 'Failed to fetch' } });
+
+    const searchPromises = rowsToSearch.map(async (row) => {
+      dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'loading' } });
+      try {
+        const options = {
+          scryfall: row.scryfallSearchOptions,
+          pokemontcg: row.pokemonTcgSearchOptions,
+        };
+        const cardData = await search(row.providerId, row.query, options);
+        if (cardData && cardData.length > 0) {
+          dispatch({ type: 'SET_CARD_DATA', payload: { id: row.id, card: cardData[0], searchResults: cardData } });
+        } else {
+          dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'error', error: 'No cards found' } });
         }
+      } catch (e) {
+        dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'error', error: 'Failed to fetch' } });
       }
     });
     
@@ -52,6 +68,8 @@ export default function AppHeader() {
         toast({ title: t('toast.searchComplete.title'), description: t('toast.searchComplete.description') });
     } catch {
         toast({ variant: "destructive", title: t('toast.searchFailed.title'), description: t('toast.searchFailed.description') });
+    } finally {
+        setIsSearching(false);
     }
   };
 
