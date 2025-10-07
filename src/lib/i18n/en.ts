@@ -48,6 +48,17 @@ export const en = {
     include_variations: 'Include rare variants',
     save: 'Save',
     cancel: 'Cancel',
+    type_line: 'Type Line',
+    artist: 'Artist',
+    rarity: 'Rarity',
+    is_token: 'Is Token',
+    foil: 'Is Foil',
+    legalities: 'Legalities',
+    legal: 'Legal',
+    not_legal: 'Not Legal',
+    remove: 'Remove',
+    add: 'Add',
+    format: 'Format',
     uniqueOptions: {
       cards: 'Cards',
       art: 'Art',
@@ -72,6 +83,12 @@ export const en = {
       auto: 'Auto',
       asc: 'Ascending',
       desc: 'Descending',
+    },
+    rarityOptions: {
+      common: 'Common',
+      uncommon: 'Uncommon',
+      rare: 'Rare',
+      mythic: 'Mythic Rare',
     }
   },
   pokemonTcgModal: {
