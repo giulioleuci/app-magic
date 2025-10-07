@@ -11,6 +11,12 @@ export interface ScryfallSearchOptions {
   include_extras?: boolean;
   include_multilingual?: boolean;
   include_variations?: boolean;
+  type_line?: string;
+  is_token?: boolean;
+  legalities?: { [key: string]: 'legal' | 'not_legal' };
+  foil?: boolean;
+  rarity?: 'common' | 'uncommon' | 'rare' | 'mythic';
+  artist?: string;
 }
 
 export interface PokemonTcgSearchOptions {

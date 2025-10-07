@@ -34,9 +34,21 @@ const normalizePokemonTcgData = (card: any): NormalizedCard => {
 
 const searchScryfall = async (query: string, options?: ScryfallSearchOptions): Promise<NormalizedCard[] | null> => {
   const params = new URLSearchParams();
-  params.append('q', query);
+  let fullQuery = query;
 
   if (options) {
+    if (options.type_line) fullQuery += ` t:"${options.type_line}"`;
+    if (options.is_token) fullQuery += ` is:token`;
+    if (options.legalities) {
+      for (const [format, legality] of Object.entries(options.legalities)) {
+        if (legality === 'legal') fullQuery += ` f:${format}`;
+        else fullQuery += ` -f:${format}`;
+      }
+    }
+    if (options.foil) fullQuery += ` is:foil`;
+    if (options.rarity) fullQuery += ` r:${options.rarity}`;
+    if (options.artist) fullQuery += ` a:"${options.artist}"`;
+
     if (options.unique) params.append('unique', options.unique);
     if (options.order) params.append('order', options.order);
     if (options.dir) params.append('dir', options.dir);
@@ -48,6 +60,8 @@ const searchScryfall = async (query: string, options?: ScryfallSearchOptions): P
     params.append('unique', 'prints');
     params.append('include_extras', 'true');
   }
+
+  params.append('q', fullQuery);
 
   const response = await fetch(`https://api.scryfall.com/cards/search?${params.toString()}`);
 
