@@ -1,4 +1,5 @@
 import type { NormalizedCard, PokemonTcgSearchOptions, ScryfallSearchOptions } from '@/lib/types';
+import { fetchWithRetry } from '@/lib/retry';
 
 const normalizeScryfallData = (card: any): NormalizedCard => {
     const image_uris = card.image_uris || (card.card_faces && card.card_faces[0].image_uris);
@@ -63,7 +64,7 @@ const searchScryfall = async (query: string, options?: ScryfallSearchOptions): P
 
   params.append('q', fullQuery);
 
-  const response = await fetch(`https://api.scryfall.com/cards/search?${params.toString()}`);
+  const response = await fetchWithRetry(`https://api.scryfall.com/cards/search?${params.toString()}`, undefined, 2);
 
   // Scryfall API has a rate limit, a small delay helps to avoid hitting it.
   await new Promise(resolve => setTimeout(resolve, 100));
@@ -97,7 +98,7 @@ const searchPokemonTcg = async (query: string, options?: PokemonTcgSearchOptions
         params.append('orderBy', `${direction}${options.order}`);
     }
 
-    const response = await fetch(`https://api.pokemontcg.io/v2/cards?${params.toString()}`);
+    const response = await fetchWithRetry(`https://api.pokemontcg.io/v2/cards?${params.toString()}`, undefined, 2);
 
     if (!response.ok) {
         if (response.status === 404) {

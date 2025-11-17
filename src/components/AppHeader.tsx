@@ -1,6 +1,6 @@
 
 "use client";
-import { Plus, Search, FileDown, Printer, FileUp, Languages } from "lucide-react";
+import { Plus, Search, FileDown, Printer, FileUp, Languages, Undo2, Redo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCardContext } from "@/context/CardContext";
 import { useSearch } from "@/context/SearchContext";
@@ -8,7 +8,7 @@ import { useCardSearch } from "@/hooks/useCardSearch";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import type { CardRow, NormalizedCard } from "@/lib/types";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import * as XLSX from 'xlsx';
 import {
@@ -17,15 +17,23 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import SuccessFeedback from "./SuccessFeedback";
 
 export default function AppHeader() {
-  const { state, dispatch } = useCardContext();
+  const { state, dispatch, undo, redo, canUndo, canRedo } = useCardContext();
   const { search } = useCardSearch();
-  const { setIsSearching, setProviderId } = useSearch();
+  const { setIsSearching, setProviderId, setProgress, updateProgress } = useSearch();
   const router = useRouter();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t, setLanguage, language } = useLanguage();
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleAddRow = () => {
     dispatch({ type: 'ADD_ROW' });
@@ -42,6 +50,14 @@ export default function AppHeader() {
       setProviderId(''); // Reset providerId if no pokemontcg cards are being searched
     }
 
+    // Initialize progress
+    setProgress({
+      current: 0,
+      total: rowsToSearch.length,
+      found: 0,
+      failed: 0,
+    });
+
     setIsSearching(true);
     toast({ title: t('toast.searchingAll.title'), description: t('toast.searchingAll.description') });
 
@@ -55,16 +71,20 @@ export default function AppHeader() {
         const cardData = await search(row.providerId, row.query, options);
         if (cardData && cardData.length > 0) {
           dispatch({ type: 'SET_CARD_DATA', payload: { id: row.id, card: cardData[0], searchResults: cardData } });
+          updateProgress({ found: 1 });
         } else {
           dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'error', error: 'No cards found' } });
+          updateProgress({ failed: 1 });
         }
       } catch (e) {
         dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'error', error: 'Failed to fetch' } });
+        updateProgress({ failed: 1 });
       }
     });
-    
+
     try {
         await Promise.all(searchPromises);
+        setShowSuccess(true);
         toast({ title: t('toast.searchComplete.title'), description: t('toast.searchComplete.description') });
     } catch {
         toast({ variant: "destructive", title: t('toast.searchFailed.title'), description: t('toast.searchFailed.description') });
@@ -184,36 +204,59 @@ export default function AppHeader() {
 
 
   return (
-    <header className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-      <h1 className="font-headline text-3xl md:text-4xl font-bold text-primary">
-        ProxyForge Web
-      </h1>
-      <div className="flex flex-wrap gap-2">
-        <Button onClick={handleAddRow}><Plus /> {t('header.addCard')}</Button>
-        <Button onClick={handleSearchAll} variant="secondary"><Search /> {t('header.searchAll')}</Button>
-        <Button onClick={handleImportClick} variant="secondary"><FileUp /> {t('header.import')}</Button>
-        <Button onClick={handleExport} variant="secondary"><FileDown /> {t('header.export')}</Button>
-        <Button onClick={handlePrint} variant="outline"><Printer /> {t('header.printPdf')}</Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
-              <Languages />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onSelect={() => setLanguage('en')} disabled={language === 'en'}>English</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setLanguage('it')} disabled={language === 'it'}>Italiano</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          accept=".xlsx, .xls"
-          className="hidden"
-        />
-      </div>
-    </header>
+    <>
+      <header className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <h1 className="font-headline text-3xl md:text-4xl font-bold text-primary">
+          ProxyForge Web
+        </h1>
+        <div className="flex flex-wrap gap-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={undo} variant="ghost" size="icon" disabled={!canUndo}>
+                  <Undo2 />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Undo (Ctrl+Z)</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={redo} variant="ghost" size="icon" disabled={!canRedo}>
+                  <Redo2 />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Redo (Ctrl+Y)</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <Button onClick={handleAddRow}><Plus /> {t('header.addCard')}</Button>
+          <Button onClick={handleSearchAll} variant="secondary"><Search /> {t('header.searchAll')}</Button>
+          <Button onClick={handleImportClick} variant="secondary"><FileUp /> {t('header.import')}</Button>
+          <Button onClick={handleExport} variant="secondary"><FileDown /> {t('header.export')}</Button>
+          <Button onClick={handlePrint} variant="outline"><Printer /> {t('header.printPdf')}</Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Languages />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={() => setLanguage('en')} disabled={language === 'en'}>English</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setLanguage('it')} disabled={language === 'it'}>Italiano</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept=".xlsx, .xls"
+            className="hidden"
+          />
+        </div>
+      </header>
+      <SuccessFeedback show={showSuccess} onComplete={() => setShowSuccess(false)} />
+    </>
   );
 }
 

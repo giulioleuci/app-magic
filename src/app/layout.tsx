@@ -6,6 +6,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { SearchProvider } from '@/context/SearchContext';
+import { MultiSelectProvider } from '@/context/MultiSelectContext';
+import { PrintOptionsProvider } from '@/context/PrintOptionsContext';
 
 export const metadata: Metadata = {
   title: 'ProxyForge Web',
@@ -29,7 +31,11 @@ export default function RootLayout({
         <LanguageProvider>
           <SearchProvider>
             <CardProvider>
-              {children}
+              <MultiSelectProvider>
+                <PrintOptionsProvider>
+                  {children}
+                </PrintOptionsProvider>
+              </MultiSelectProvider>
             </CardProvider>
           </SearchProvider>
         </LanguageProvider>
