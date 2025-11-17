@@ -4,34 +4,60 @@ import { availableProviders } from "@/api/providers";
 import { useCardContext } from "@/context/CardContext";
 import { useSearch } from "@/context/SearchContext";
 import { useCardSearch } from "@/hooks/useCardSearch";
+import { useMultiSelect } from "@/context/MultiSelectContext";
+import { useDebounce } from "@/hooks/useDebounce";
 import type { CardRow, NormalizedCard, ScryfallSearchOptions, PokemonTcgSearchOptions } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Minus, Plus, Search, Trash2, AlertTriangle, Replace, Settings2, ExternalLink } from "lucide-react";
-import Image from "next/image";
 import { Skeleton } from "./ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CardSelectionModal from "./CardSelectionModal";
 import { useLanguage } from "@/context/LanguageContext";
 import ScryfallSearchModal from "./ScryfallSearchModal";
 import PokemonTcgSearchModal from "./PokemonTcgSearchModal";
 import Link from "next/link";
+import CachedImage from "./CachedImage";
+import ImagePreview from "./ImagePreview";
+import DuplicateIndicator from "./DuplicateIndicator";
 
 interface CardRowProps {
   row: CardRow;
 }
 
 export default function CardRowComponent({ row }: CardRowProps) {
-  const { dispatch } = useCardContext();
+  const { state, dispatch } = useCardContext();
   const { search } = useCardSearch();
   const { setIsSearching, setProviderId } = useSearch();
+  const { isSelected, toggleSelect } = useMultiSelect();
   const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
   const [isScryfallSettingsOpen, setIsScryfallSettingsOpen] = useState(false);
   const [isPokemonTcgSettingsOpen, setIsPokemonTcgSettingsOpen] = useState(false);
+  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
+  const [localQuery, setLocalQuery] = useState(row.query);
+  const debouncedQuery = useDebounce(localQuery, 300);
   const { t } = useLanguage();
+
+  // Update query after debounce
+  useEffect(() => {
+    if (debouncedQuery !== row.query) {
+      handleUpdate({ query: debouncedQuery });
+    }
+  }, [debouncedQuery]);
+
+  // Sync local query with row query when it changes externally
+  useEffect(() => {
+    setLocalQuery(row.query);
+  }, [row.query]);
+
+  // Count duplicates
+  const duplicateCount = state.rows.filter(r =>
+    r.card && row.card && r.card.id === row.card.id
+  ).length;
 
   const handleUpdate = (updates: Partial<Omit<CardRow, 'id'>>) => {
     dispatch({ type: 'UPDATE_ROW', payload: { id: row.id, data: updates } });
@@ -94,9 +120,15 @@ export default function CardRowComponent({ row }: CardRowProps) {
   };
 
   return (
-    <TableRow>
+    <TableRow className={isSelected(row.id) ? "bg-primary/10" : ""}>
+      <TableCell className="w-12">
+        <Checkbox
+          checked={isSelected(row.id)}
+          onCheckedChange={() => toggleSelect(row.id)}
+        />
+      </TableCell>
       <TableCell>
-        <div className="relative">
+        <div className="relative cursor-pointer" onClick={() => row.card && setIsImagePreviewOpen(true)}>
           {row.status === 'loading' && <Skeleton className="h-[88px] w-[63px] rounded-md" />}
           {row.status === 'error' && (
             <TooltipProvider>
@@ -114,17 +146,16 @@ export default function CardRowComponent({ row }: CardRowProps) {
           )}
           {row.status === 'found' && row.card && (
             <>
-              <Image
+              <CachedImage
                 src={row.card.image_uris.front}
                 alt={row.card.name}
                 width={63}
                 height={88}
-                className="rounded-md"
-                data-ai-hint="card game"
+                className="rounded-md hover:ring-2 hover:ring-primary transition-all"
               />
                {row.searchResults && row.searchResults.length > 1 && (
                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity rounded-md">
-                    <Button variant="ghost" size="icon" onClick={openChangeCardModal} className="text-white hover:text-primary">
+                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); openChangeCardModal(); }} className="text-white hover:text-primary">
                         <Replace className="h-6 w-6" />
                     </Button>
                  </div>
@@ -138,11 +169,12 @@ export default function CardRowComponent({ row }: CardRowProps) {
         <div className="flex items-center gap-2">
             <Input
             placeholder={t('card.placeholder')}
-            value={row.query}
-            onChange={(e) => handleUpdate({ query: e.target.value })}
+            value={localQuery}
+            onChange={(e) => setLocalQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             className="bg-background"
             />
+            {row.card && <DuplicateIndicator count={duplicateCount} />}
             {row.card?.url && (
                 <TooltipProvider>
                     <Tooltip>
@@ -250,6 +282,15 @@ export default function CardRowComponent({ row }: CardRowProps) {
           options={row.pokemonTcgSearchOptions || {}}
           onSave={handlePokemonTcgSearchOptionsSave}
           onClose={() => setIsPokemonTcgSettingsOpen(false)}
+        />
+      )}
+      {isImagePreviewOpen && row.card && (
+        <ImagePreview
+          imageUrl={row.card.image_uris.front}
+          cardName={row.card.name}
+          isOpen={isImagePreviewOpen}
+          onClose={() => setIsImagePreviewOpen(false)}
+          backImageUrl={row.card.image_uris.back}
         />
       )}
     </TableRow>
