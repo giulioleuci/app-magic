@@ -156,5 +156,68 @@ export const it = {
       title: 'Importazione fallita',
       description: 'Il file selezionato non è un file XLSX valido.',
     },
+    undoSuccess: {
+      title: 'Annullamento riuscito',
+      description: 'L\'ultima azione è stata annullata.',
+    },
+    redoSuccess: {
+      title: 'Ripristino riuscito',
+      description: 'L\'azione è stata ripristinata.',
+    },
+    noUndoHistory: {
+      title: 'Nulla da annullare',
+      description: 'Nessuna azione precedente da annullare.',
+    },
+    noRedoHistory: {
+      title: 'Nulla da ripristinare',
+      description: 'Nessuna azione da ripristinare.',
+    },
+    bulkDeleteSuccess: {
+      title: 'Carte eliminate',
+      description: '{count} carte sono state rimosse.',
+    },
+    bulkQuantityUpdated: {
+      title: 'Quantità aggiornate',
+      description: '{count} carte sono state aggiornate.',
+    },
+  },
+  filters: {
+    title: 'Filtri',
+    showAll: 'Mostra Tutto',
+    showScryfall: 'Magic (Scryfall)',
+    showPokemon: 'Pokémon TCG',
+    showFound: 'Carte Trovate',
+    showNotFound: 'Non Trovate',
+    showPending: 'In Attesa',
+    clear: 'Cancella Filtri',
+  },
+  multiSelect: {
+    selectedCount: '{count} selezionate',
+    selectAll: 'Seleziona Tutto',
+    deselectAll: 'Deseleziona Tutto',
+    deleteSelected: 'Elimina Selezionate',
+    setQuantity: 'Imposta Quantità',
+    enterQuantity: 'Inserisci quantità per le carte selezionate',
+  },
+  duplicates: {
+    warning: 'Carta duplicata',
+    tooltip: 'Questa carta appare {count} volte nella tua lista',
+  },
+  imagePreview: {
+    clickToEnlarge: 'Clicca per ingrandire',
+    close: 'Chiudi',
+  },
+  printOptions: {
+    title: 'Opzioni di Stampa',
+    cutGuides: 'Guide di Taglio',
+    cutGuidesNone: 'Nessuna',
+    cutGuidesDashed: 'Linee Tratteggiate',
+    cutGuidesSolid: 'Linee Continue',
+    cutGuidesCorners: 'Segni Angolo',
+  },
+  progress: {
+    searching: 'Ricerca {current} di {total} carte...',
+    found: '{found} trovate',
+    failed: '{failed} fallite',
   },
 };

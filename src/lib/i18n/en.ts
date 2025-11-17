@@ -156,5 +156,68 @@ export const en = {
       title: 'Import failed',
       description: 'The selected file is not a valid XLSX file.',
     },
+    undoSuccess: {
+      title: 'Undo successful',
+      description: 'Last action has been undone.',
+    },
+    redoSuccess: {
+      title: 'Redo successful',
+      description: 'Action has been redone.',
+    },
+    noUndoHistory: {
+      title: 'Nothing to undo',
+      description: 'No previous actions to undo.',
+    },
+    noRedoHistory: {
+      title: 'Nothing to redo',
+      description: 'No actions to redo.',
+    },
+    bulkDeleteSuccess: {
+      title: 'Cards deleted',
+      description: '{count} cards have been removed.',
+    },
+    bulkQuantityUpdated: {
+      title: 'Quantities updated',
+      description: '{count} cards have been updated.',
+    },
+  },
+  filters: {
+    title: 'Filters',
+    showAll: 'Show All',
+    showScryfall: 'Magic (Scryfall)',
+    showPokemon: 'Pokémon TCG',
+    showFound: 'Found Cards',
+    showNotFound: 'Not Found',
+    showPending: 'Pending Search',
+    clear: 'Clear Filters',
+  },
+  multiSelect: {
+    selectedCount: '{count} selected',
+    selectAll: 'Select All',
+    deselectAll: 'Deselect All',
+    deleteSelected: 'Delete Selected',
+    setQuantity: 'Set Quantity',
+    enterQuantity: 'Enter quantity for selected cards',
+  },
+  duplicates: {
+    warning: 'Duplicate card',
+    tooltip: 'This card appears {count} times in your list',
+  },
+  imagePreview: {
+    clickToEnlarge: 'Click to enlarge',
+    close: 'Close',
+  },
+  printOptions: {
+    title: 'Print Options',
+    cutGuides: 'Cut Guides',
+    cutGuidesNone: 'None',
+    cutGuidesDashed: 'Dashed Lines',
+    cutGuidesSolid: 'Solid Lines',
+    cutGuidesCorners: 'Corner Marks',
+  },
+  progress: {
+    searching: 'Searching {current} of {total} cards...',
+    found: '{found} found',
+    failed: '{failed} failed',
   },
 };
