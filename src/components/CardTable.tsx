@@ -14,6 +14,7 @@ export default function CardTable({ rows }: CardTableProps) {
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead className="w-12"></TableHead>
           <TableHead className="w-[100px]">{t('table.image')}</TableHead>
           <TableHead>{t('table.cardName')}</TableHead>
           <TableHead className="w-[150px]">{t('table.quantity')}</TableHead>
