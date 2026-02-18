@@ -132,15 +132,21 @@ export const useImageCache = (url: string | undefined, enabled: boolean = true) 
     }
 
     let mounted = true;
+    let createdUrl: string | null = null;
 
     const loadImage = async () => {
       try {
         // Try to get from cache first
         const cached = await cacheDB.get(url);
 
-        if (cached && mounted) {
-          setCachedUrl(cached);
-          setIsLoading(false);
+        if (cached) {
+          if (mounted) {
+            createdUrl = cached;
+            setCachedUrl(cached);
+            setIsLoading(false);
+          } else {
+            URL.revokeObjectURL(cached);
+          }
           return;
         }
 
@@ -155,8 +161,11 @@ export const useImageCache = (url: string | undefined, enabled: boolean = true) 
         const objectUrl = URL.createObjectURL(blob);
 
         if (mounted) {
+          createdUrl = objectUrl;
           setCachedUrl(objectUrl);
           setIsLoading(false);
+        } else {
+          URL.revokeObjectURL(objectUrl);
         }
       } catch (error) {
         console.error('Error caching image:', error);
@@ -173,8 +182,8 @@ export const useImageCache = (url: string | undefined, enabled: boolean = true) 
     return () => {
       mounted = false;
       // Clean up object URL when component unmounts
-      if (cachedUrl && cachedUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(cachedUrl);
+      if (createdUrl) {
+        URL.revokeObjectURL(createdUrl);
       }
     };
   }, [url, enabled]);
