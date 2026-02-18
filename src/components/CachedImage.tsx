@@ -15,8 +15,8 @@ interface CachedImageProps {
 }
 
 export default function CachedImage({ src, alt, width, height, className, onClick }: CachedImageProps) {
-  const { cachedUrl } = useImageCache(src);
   const [isVisible, setIsVisible] = useState(false);
+  const { cachedUrl } = useImageCache(src, isVisible);
   const [hasLoaded, setHasLoaded] = useState(false);
   const imgRef = useRef<HTMLDivElement>(null);
 
