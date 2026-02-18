@@ -117,13 +117,17 @@ class ImageCacheDB {
 
 const cacheDB = new ImageCacheDB();
 
-export const useImageCache = (url: string | undefined) => {
+export const useImageCache = (url: string | undefined, enabled: boolean = true) => {
   const [cachedUrl, setCachedUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!url) {
       setIsLoading(false);
+      return;
+    }
+
+    if (!enabled) {
       return;
     }
 
@@ -173,7 +177,7 @@ export const useImageCache = (url: string | undefined) => {
         URL.revokeObjectURL(cachedUrl);
       }
     };
-  }, [url]);
+  }, [url, enabled]);
 
   return { cachedUrl: cachedUrl || url, isLoading };
 };
