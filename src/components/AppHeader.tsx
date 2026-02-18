@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import type { CardRow, NormalizedCard } from "@/lib/types";
 import { useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import * as XLSX from 'xlsx';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -106,7 +105,7 @@ export default function AppHeader() {
     router.push('/print');
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
     if (state.rows.length === 0) {
       toast({
         variant: 'destructive',
@@ -129,6 +128,7 @@ export default function AppHeader() {
       cardIsDfc: card?.is_dfc || false,
       cardUrl: card?.url || '',
     }));
+    const XLSX = await import('xlsx');
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Cards');
@@ -148,8 +148,9 @@ export default function AppHeader() {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
+        const XLSX = await import('xlsx');
         const data = e.target?.result;
         const workbook = XLSX.read(data, { type: 'array' });
         const sheetName = workbook.SheetNames[0];
