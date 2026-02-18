@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { CardRow, NormalizedCard } from "@/lib/types";
 import { useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import { limitConcurrency } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -60,31 +61,39 @@ export default function AppHeader() {
     setIsSearching(true);
     toast({ title: t('toast.searchingAll.title'), description: t('toast.searchingAll.description') });
 
-    const searchPromises = rowsToSearch.map(async (row) => {
-      dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'loading' } });
-      try {
-        const options = {
-          scryfall: row.scryfallSearchOptions,
-          pokemontcg: row.pokemonTcgSearchOptions,
-        };
-        const cardData = await search(row.providerId, row.query, options);
-        if (cardData && cardData.length > 0) {
-          dispatch({ type: 'SET_CARD_DATA', payload: { id: row.id, card: cardData[0], searchResults: cardData } });
-          updateProgress({ found: 1 });
-        } else {
-          dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'error', error: 'No cards found' } });
+    try {
+      await limitConcurrency(rowsToSearch, 5, async (row) => {
+        dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'loading' } });
+        try {
+          const options = {
+            scryfall: row.scryfallSearchOptions,
+            pokemontcg: row.pokemonTcgSearchOptions,
+          };
+          const cardData = await search(row.providerId, row.query, options);
+          if (cardData && cardData.length > 0) {
+            dispatch({
+              type: 'SET_CARD_DATA',
+              payload: { id: row.id, card: cardData[0], searchResults: cardData },
+            });
+            updateProgress({ found: 1 });
+          } else {
+            dispatch({
+              type: 'SET_SEARCH_STATUS',
+              payload: { id: row.id, status: 'error', error: 'No cards found' },
+            });
+            updateProgress({ failed: 1 });
+          }
+        } catch (e) {
+          dispatch({
+            type: 'SET_SEARCH_STATUS',
+            payload: { id: row.id, status: 'error', error: 'Failed to fetch' },
+          });
           updateProgress({ failed: 1 });
         }
-      } catch (e) {
-        dispatch({ type: 'SET_SEARCH_STATUS', payload: { id: row.id, status: 'error', error: 'Failed to fetch' } });
-        updateProgress({ failed: 1 });
-      }
-    });
+      });
 
-    try {
-        await Promise.all(searchPromises);
-        setShowSuccess(true);
-        toast({ title: t('toast.searchComplete.title'), description: t('toast.searchComplete.description') });
+      setShowSuccess(true);
+      toast({ title: t('toast.searchComplete.title'), description: t('toast.searchComplete.description') });
     } catch {
         toast({ variant: "destructive", title: t('toast.searchFailed.title'), description: t('toast.searchFailed.description') });
     } finally {
