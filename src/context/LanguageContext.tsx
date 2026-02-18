@@ -9,15 +9,25 @@ type Language = 'en' | 'it';
 
 const translations = { en, it };
 
+export type Paths<T> = T extends string
+  ? never
+  : {
+      [K in keyof T & string]: T[K] extends string
+        ? K
+        : K | `${K}.${Paths<T[K]>}`;
+    }[keyof T & string];
+
+export type TranslationKey = Paths<typeof en>;
+
 // Function to perform translations with placeholders
-const translate = (lang: Language, key: string, placeholders: { [key: string]: string } = {}): string => {
-    const keys = key.split('.');
+const translate = (lang: Language, key: TranslationKey, placeholders: { [key: string]: string } = {}): string => {
+    const keys = (key as string).split('.');
     let a: any = translations[lang];
     for (const k of keys) {
         if (a && typeof a === 'object' && k in a) {
             a = a[k];
         } else {
-            return key; // Return key if not found
+            return key as string; // Return key if not found
         }
     }
     
@@ -34,7 +44,7 @@ const translate = (lang: Language, key: string, placeholders: { [key: string]: s
 interface LanguageContextType {
   language: Language;
   setLanguage: (language: Language) => void;
-  t: (key: string, placeholders?: { [key: string]: string }) => string;
+  t: (key: TranslationKey, placeholders?: { [key: string]: string }) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -42,7 +52,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>('en');
 
-  const t = (key: string, placeholders?: { [key: string]: string }) => {
+  const t = (key: TranslationKey, placeholders?: { [key: string]: string }) => {
     return translate(language, key, placeholders);
   }
 

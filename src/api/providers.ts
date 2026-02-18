@@ -1,6 +1,6 @@
-import type { Provider } from "@/lib/types";
+import type { Provider, ProviderId } from "@/lib/types";
 
-export const availableProviders: Omit<Provider, 'name'>[] = [
+export const availableProviders: Pick<Provider, 'id'>[] = [
   { id: 'scryfall' },
   { id: 'pokemontcg' },
 ];

@@ -1,6 +1,8 @@
 
+export type ProviderId = 'scryfall' | 'pokemontcg';
+
 export interface Provider {
-  id: string;
+  id: ProviderId;
   name: string;
 }
 
@@ -41,7 +43,7 @@ export interface CardRow {
   id: string;
   query: string;
   quantity: number;
-  providerId: string;
+  providerId: ProviderId;
   card: NormalizedCard | null;
   searchResults?: NormalizedCard[] | null;
   scryfallSearchOptions?: ScryfallSearchOptions;
