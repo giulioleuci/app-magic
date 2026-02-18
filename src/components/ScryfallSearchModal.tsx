@@ -45,10 +45,10 @@ export default function ScryfallSearchModal({ options, onSave, onClose }: Scryfa
     setCurrentOptions(prev => ({...prev, legalities: newLegalities}));
   };
 
-  const uniqueOptions = ['cards', 'art', 'prints'];
-  const orderOptions = ['name', 'set', 'released', 'rarity', 'color', 'usd', 'tix', 'eur', 'cmc', 'power', 'toughness', 'edhrec', 'artist'];
-  const dirOptions = ['auto', 'asc', 'desc'];
-  const rarityOptions = ['common', 'uncommon', 'rare', 'mythic'];
+  const uniqueOptions = ['cards', 'art', 'prints'] as const;
+  const orderOptions = ['name', 'set', 'released', 'rarity', 'color', 'usd', 'tix', 'eur', 'cmc', 'power', 'toughness', 'edhrec', 'artist'] as const;
+  const dirOptions = ['auto', 'asc', 'desc'] as const;
+  const rarityOptions = ['common', 'uncommon', 'rare', 'mythic'] as const;
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -69,7 +69,7 @@ export default function ScryfallSearchModal({ options, onSave, onClose }: Scryfa
               </SelectTrigger>
               <SelectContent>
                 {uniqueOptions.map(opt => (
-                  <SelectItem key={opt} value={opt}>{t(`scryfallModal.uniqueOptions.${opt}` as any)}</SelectItem>
+                  <SelectItem key={opt} value={opt}>{t(`scryfallModal.uniqueOptions.${opt}`)}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -86,7 +86,7 @@ export default function ScryfallSearchModal({ options, onSave, onClose }: Scryfa
               </SelectTrigger>
               <SelectContent>
                 {orderOptions.map(opt => (
-                  <SelectItem key={opt} value={opt}>{t(`scryfallModal.orderOptions.${opt}` as any)}</SelectItem>
+                  <SelectItem key={opt} value={opt}>{t(`scryfallModal.orderOptions.${opt}`)}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -103,7 +103,7 @@ export default function ScryfallSearchModal({ options, onSave, onClose }: Scryfa
               </SelectTrigger>
               <SelectContent>
                 {dirOptions.map(opt => (
-                  <SelectItem key={opt} value={opt}>{t(`scryfallModal.dirOptions.${opt}` as any)}</SelectItem>
+                  <SelectItem key={opt} value={opt}>{t(`scryfallModal.dirOptions.${opt}`)}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -130,7 +130,7 @@ export default function ScryfallSearchModal({ options, onSave, onClose }: Scryfa
               </SelectTrigger>
               <SelectContent>
                 {rarityOptions.map(opt => (
-                  <SelectItem key={opt} value={opt}>{t(`scryfallModal.rarityOptions.${opt}` as any)}</SelectItem>
+                  <SelectItem key={opt} value={opt}>{t(`scryfallModal.rarityOptions.${opt}`)}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

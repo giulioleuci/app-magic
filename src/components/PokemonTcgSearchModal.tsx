@@ -24,8 +24,8 @@ export default function PokemonTcgSearchModal({ options, onSave, onClose }: Poke
     onSave(currentOptions);
   };
 
-  const orderOptions = ['name', 'set.releaseDate', 'set.name', 'number', 'artist', 'rarity', 'nationalPokedexNumbers'];
-  const dirOptions = ['asc', 'desc'];
+  const orderOptions = ['name', 'set.releaseDate', 'set.name', 'number', 'artist', 'rarity', 'nationalPokedexNumbers'] as const;
+  const dirOptions = ['asc', 'desc'] as const;
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -54,7 +54,7 @@ export default function PokemonTcgSearchModal({ options, onSave, onClose }: Poke
               </SelectTrigger>
               <SelectContent>
                 {orderOptions.map(opt => (
-                  <SelectItem key={opt} value={opt}>{t(`pokemonTcgModal.orderOptions.${opt}` as any)}</SelectItem>
+                  <SelectItem key={opt} value={opt}>{t(`pokemonTcgModal.orderOptions.${opt}`)}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -71,7 +71,7 @@ export default function PokemonTcgSearchModal({ options, onSave, onClose }: Poke
               </SelectTrigger>
               <SelectContent>
                 {dirOptions.map(opt => (
-                  <SelectItem key={opt} value={opt}>{t(`pokemonTcgModal.dirOptions.${opt}` as any)}</SelectItem>
+                  <SelectItem key={opt} value={opt}>{t(`pokemonTcgModal.dirOptions.${opt}`)}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

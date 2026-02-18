@@ -201,7 +201,7 @@ export default function CardItem({ row }: CardItemProps) {
                 </SelectTrigger>
                 <SelectContent>
                     {availableProviders.map(p => (
-                    <SelectItem key={p.id} value={p.id}>{t(`providers.${p.id}` as any)}</SelectItem>
+                    <SelectItem key={p.id} value={p.id}>{t(`providers.${p.id}`)}</SelectItem>
                     ))}
                 </SelectContent>
               </Select>
