@@ -5,7 +5,7 @@ import { useSearch } from "@/context/SearchContext";
 import { useCardSearch } from "@/hooks/useCardSearch";
 import { useMultiSelect } from "@/context/MultiSelectContext";
 import { useDebounce } from "@/hooks/useDebounce";
-import type { CardRow, NormalizedCard, ScryfallSearchOptions, PokemonTcgSearchOptions } from "@/lib/types";
+import type { CardRow, NormalizedCard, ScryfallSearchOptions, PokemonTcgSearchOptions, ProviderId } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -194,7 +194,7 @@ export default function CardItem({ row }: CardItemProps) {
             <div className="flex items-center gap-1">
               <Select
                 value={row.providerId}
-                onValueChange={(value) => handleUpdate({ providerId: value })}
+                onValueChange={(value) => handleUpdate({ providerId: value as ProviderId })}
               >
                 <SelectTrigger>
                     <SelectValue placeholder={t('card.selectProvider')} />
