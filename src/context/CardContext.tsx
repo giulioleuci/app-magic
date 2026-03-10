@@ -9,13 +9,13 @@ import { useLanguage } from './LanguageContext';
 
 const generateId = () => `row-${Date.now()}-${Math.random()}`;
 
-type State = {
+export type State = {
   rows: CardRow[];
   history: CardRow[][];
   historyIndex: number;
 };
 
-type Action =
+export type Action =
   | { type: 'ADD_ROW' }
   | { type: 'REMOVE_ROW'; payload: { id: string } }
   | { type: 'REMOVE_ROWS'; payload: { ids: string[] } }
@@ -30,7 +30,7 @@ type Action =
 
 const MAX_HISTORY_SIZE = 50;
 
-const initialState: State = {
+export const initialState: State = {
   rows: [],
   history: [[]],
   historyIndex: 0,
@@ -55,7 +55,7 @@ const addToHistory = (state: State, newRows: CardRow[]): State => {
   };
 };
 
-const cardReducer = (state: State, action: Action): State => {
+export const cardReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'ADD_ROW':
       const lastRow = state.rows[state.rows.length - 1];
