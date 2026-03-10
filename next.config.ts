@@ -9,12 +9,6 @@ const nextConfig: NextConfig = {
   basePath: isGithubActions ? `/${repoName}` : '',
   assetPrefix: isGithubActions ? `/${repoName}/` : '',
   /* config options here */
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   images: {
     unoptimized: true,
     remotePatterns: [
