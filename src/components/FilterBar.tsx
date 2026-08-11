@@ -15,7 +15,7 @@ import {
 } from "./ui/dropdown-menu";
 
 export type FilterOptions = {
-  provider?: 'scryfall' | 'pokemontcg' | null;
+  provider?: 'scryfall' | 'pokemontcg' | 'yugioh' | null;
   status?: 'found' | 'idle' | 'error' | null;
 };
 
@@ -32,7 +32,7 @@ export default function FilterBar({ onFilterChange }: FilterBarProps) {
     onFilterChange(newFilters);
   };
 
-  const toggleProviderFilter = (provider: 'scryfall' | 'pokemontcg') => {
+  const toggleProviderFilter = (provider: 'scryfall' | 'pokemontcg' | 'yugioh') => {
     updateFilters({
       ...filters,
       provider: filters.provider === provider ? null : provider,
@@ -80,6 +80,12 @@ export default function FilterBar({ onFilterChange }: FilterBarProps) {
             onCheckedChange={() => toggleProviderFilter('pokemontcg')}
           >
             {t('filters.showPokemon')}
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={filters.provider === 'yugioh'}
+            onCheckedChange={() => toggleProviderFilter('yugioh')}
+          >
+            {t('filters.showYuGiOh')}
           </DropdownMenuCheckboxItem>
 
           <DropdownMenuSeparator />

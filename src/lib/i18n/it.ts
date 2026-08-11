@@ -5,6 +5,7 @@ export const it = {
     searchAll: 'Cerca Tutto',
     import: 'Importa',
     export: 'Esporta',
+    importDeck: 'Importa Lista Deck',
     printPdf: 'Stampa PDF',
   },
   table: {
@@ -116,6 +117,22 @@ export const it = {
       desc: 'Discendente',
     }
   },
+  deckImport: {
+    title: 'Importa Lista Deck',
+    selectProvider: 'Gioco',
+    fileLabel: 'Scegli un file .csv o .xlsx',
+    parseFailed: 'Impossibile leggere questo file. Usa un file .csv o .xlsx.',
+    noRows: 'Nessuna riga utilizzabile trovata in questo file.',
+    previewTitle: 'Righe analizzate ({count})',
+    colGame: 'Gioco',
+    colQty: 'Q.tà',
+    colName: 'Nome',
+    colSet: 'Set',
+    colNumber: 'Numero',
+    skipped: '{count} righe vuote o non valide saltate',
+    addCards: 'Aggiungi {count} carte',
+    cancel: 'Annulla',
+  },
   printPreview: {
     title: 'Anteprima di Stampa',
     backToEditor: 'Torna all\'Editor',
@@ -157,6 +174,10 @@ export const it = {
       title: 'Importazione fallita',
       description: 'Il file selezionato non è un file XLSX valido.',
     },
+    importDeckSuccess: {
+      title: 'Deck importato',
+      description: '{count} carte aggiunte alla lista.',
+    },
     undoSuccess: {
       title: 'Annullamento riuscito',
       description: 'L\'ultima azione è stata annullata.',
@@ -187,6 +208,7 @@ export const it = {
     showAll: 'Mostra Tutto',
     showScryfall: 'Magic (Scryfall)',
     showPokemon: 'Pokémon TCG',
+    showYuGiOh: 'Yu-Gi-Oh!',
     showFound: 'Carte Trovate',
     showNotFound: 'Non Trovate',
     showPending: 'In Attesa',

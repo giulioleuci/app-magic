@@ -5,6 +5,7 @@ export const en = {
     searchAll: 'Search All',
     import: 'Import',
     export: 'Export',
+    importDeck: 'Import Deck List',
     printPdf: 'Print PDF',
   },
   table: {
@@ -116,6 +117,22 @@ export const en = {
       desc: 'Descending',
     }
   },
+  deckImport: {
+    title: 'Import Deck List',
+    selectProvider: 'Game',
+    fileLabel: 'Choose a .csv or .xlsx file',
+    parseFailed: 'Could not read this file. Please use a .csv or .xlsx file.',
+    noRows: 'No usable rows found in this file.',
+    previewTitle: 'Parsed rows ({count})',
+    colGame: 'Game',
+    colQty: 'Qty',
+    colName: 'Name',
+    colSet: 'Set',
+    colNumber: 'Number',
+    skipped: '{count} empty or invalid rows skipped',
+    addCards: 'Add {count} cards',
+    cancel: 'Cancel',
+  },
   printPreview: {
     title: 'Print Preview',
     backToEditor: 'Back to Editor',
@@ -157,6 +174,10 @@ export const en = {
       title: 'Import failed',
       description: 'The selected file is not a valid XLSX file.',
     },
+    importDeckSuccess: {
+      title: 'Deck imported',
+      description: '{count} cards added to the list.',
+    },
     undoSuccess: {
       title: 'Undo successful',
       description: 'Last action has been undone.',
@@ -187,6 +208,7 @@ export const en = {
     showAll: 'Show All',
     showScryfall: 'Magic (Scryfall)',
     showPokemon: 'Pokémon TCG',
+    showYuGiOh: 'Yu-Gi-Oh!',
     showFound: 'Found Cards',
     showNotFound: 'Not Found',
     showPending: 'Pending Search',
