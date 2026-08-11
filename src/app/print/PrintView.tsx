@@ -2,7 +2,8 @@
 "use client";
 
 import { useCardContext } from "@/context/CardContext";
-import type { NormalizedCard } from "@/lib/types";
+import type { NormalizedCard, ProviderId } from "@/lib/types";
+import { providerRegistry } from "@/api/providers";
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,11 @@ const chunk = <T,>(arr: T[], size: number): T[][] =>
     arr.slice(i * size, i * size + size)
   );
 
+const sizeKeyFor = (providerId: ProviderId): string => {
+  const provider = providerRegistry[providerId];
+  return provider ? `${provider.printSizeMm.width}x${provider.printSizeMm.height}` : '63x88';
+};
+
 export default function PrintView() {
   const [isClient, setIsClient] = useState(false);
   const { state } = useCardContext();
@@ -27,11 +33,11 @@ export default function PrintView() {
 
   const printableCards = useMemo(() => {
     if (!isClient) return [];
-    const allCards: NormalizedCard[] = [];
+    const allCards: { card: NormalizedCard; providerId: ProviderId }[] = [];
     state.rows.forEach(row => {
       if (row.card) {
         for (let i = 0; i < row.quantity; i++) {
-          allCards.push(row.card);
+          allCards.push({ card: row.card, providerId: row.providerId });
           if (row.card.is_dfc && row.card.image_uris.back) {
             // Add the back face as a separate "card" for printing
             const backFaceCard: NormalizedCard = {
@@ -42,7 +48,7 @@ export default function PrintView() {
               },
               is_dfc: false, // Treat it as a single face for printing logic
             };
-            allCards.push(backFaceCard);
+            allCards.push({ card: backFaceCard, providerId: row.providerId });
           }
         }
       }
@@ -50,7 +56,17 @@ export default function PrintView() {
     return allCards;
   }, [state.rows, isClient]);
 
-  const pages = useMemo(() => chunk(printableCards, 9), [printableCards]);
+  const pages = useMemo(() => {
+    const grouped = new Map<string, NormalizedCard[]>();
+    printableCards.forEach(entry => {
+      const key = sizeKeyFor(entry.providerId);
+      if (!grouped.has(key)) grouped.set(key, []);
+      grouped.get(key)!.push(entry.card);
+    });
+    return [...grouped.entries()].flatMap(([key, cards]) =>
+      chunk(cards, 9).map(pageCards => ({ key, pageCards }))
+    );
+  }, [printableCards]);
 
   if (!isClient) {
     return (
@@ -89,10 +105,10 @@ export default function PrintView() {
         </div>
       ) : (
         <div className="card-grid-container">
-            {pages.map((pageCards, pageIndex) => (
+            {pages.map((page, pageIndex) => (
             <div key={pageIndex} className="print-page">
-                <div className="card-grid">
-                {pageCards.map((card, cardIndex) => (
+                <div className={page.key === '63x88' ? 'card-grid' : `card-grid card-grid-${page.key}`}>
+                {page.pageCards.map((card, cardIndex) => (
                     <div key={`${card.id}-${cardIndex}`} className="card-item">
                     <Image
                         src={card.image_uris.front}

@@ -53,6 +53,16 @@
     object-fit: cover;
 }
 
+.card-grid-59x86 {
+    grid-template-columns: repeat(3, 59mm);
+    grid-template-rows: repeat(3, 86mm);
+}
+
+.card-grid-59x86 .card-item {
+    width: 59mm;
+    height: 86mm;
+}
+
 @media print {
     body {
         margin: 0;
