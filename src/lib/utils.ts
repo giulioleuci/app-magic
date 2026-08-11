@@ -5,6 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const generateId = () => `row-${Date.now()}-${Math.random()}`;
+
 export function limitConcurrency<T, R>(
   items: T[],
   limit: number,

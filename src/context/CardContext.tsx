@@ -3,11 +3,10 @@
 
 import type { CardRow, NormalizedCard, ScryfallSearchOptions } from '@/lib/types';
 import { defaultProviderId } from '@/api/providers';
+import { generateId } from '@/lib/utils';
 import React, { createContext, useContext, useReducer, type ReactNode, useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from './LanguageContext';
-
-const generateId = () => `row-${Date.now()}-${Math.random()}`;
 
 export type State = {
   rows: CardRow[];
@@ -25,6 +24,7 @@ export type Action =
   | { type: 'SET_CARD_DATA'; payload: { id: string; card: NormalizedCard | null; searchResults?: NormalizedCard[] | null } }
   | { type: 'SET_SEARCH_RESULTS'; payload: { id: string, searchResults: NormalizedCard[] } }
   | { type: 'SET_ROWS'; payload: Partial<CardRow>[] }
+  | { type: 'APPEND_ROWS'; payload: Partial<CardRow>[] }
   | { type: 'UNDO' }
   | { type: 'REDO' };
 
@@ -70,6 +70,7 @@ export const cardReducer = (state: State, action: Action): State => {
           include_extras: true,
         },
         pokemonTcgSearchOptions: {},
+        yugiohSearchOptions: {},
         status: 'idle',
       };
       return addToHistory(state, [...state.rows, newRow]);
@@ -142,11 +143,30 @@ export const cardReducer = (state: State, action: Action): State => {
         quantity: item.quantity || 1,
         providerId: item.providerId || defaultProviderId,
         card: item.card || null,
+        identifiers: item.identifiers,
         scryfallSearchOptions: item.scryfallSearchOptions || { unique: 'prints', include_extras: true },
+        pokemonTcgSearchOptions: item.pokemonTcgSearchOptions || {},
+        yugiohSearchOptions: item.yugiohSearchOptions || {},
         status: item.status || 'idle',
         error: item.error,
       }));
       return addToHistory(state, newRows);
+
+    case 'APPEND_ROWS':
+      const appendedRows: CardRow[] = action.payload.map(item => ({
+        id: item.id || generateId(),
+        query: item.query || '',
+        quantity: item.quantity || 1,
+        providerId: item.providerId || defaultProviderId,
+        card: item.card || null,
+        identifiers: item.identifiers,
+        scryfallSearchOptions: item.scryfallSearchOptions || { unique: 'prints', include_extras: true },
+        pokemonTcgSearchOptions: item.pokemonTcgSearchOptions || {},
+        yugiohSearchOptions: item.yugiohSearchOptions || {},
+        status: item.status || 'idle',
+        error: item.error,
+      }));
+      return addToHistory(state, [...state.rows, ...appendedRows]);
 
     case 'UNDO':
       if (state.historyIndex > 0) {

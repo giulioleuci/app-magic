@@ -1,7 +1,7 @@
 import { cardReducer, initialState } from './CardContext';
 import assert from 'node:assert';
 import { defaultProviderId } from '../api/providers';
-import type { NormalizedCard } from '../lib/types';
+import type { NormalizedCard, CardRow } from '../lib/types';
 
 async function test() {
   console.log('Running tests for cardReducer...');
@@ -99,6 +99,26 @@ async function test() {
   assert.strictEqual(state.rows.length, 2);
   assert.strictEqual(state.rows[0].query, 'Charizard');
   assert.strictEqual(state.historyIndex, stateBeforeUndo.historyIndex);
+
+  // Test SET_ROWS preserves identifiers
+  state = cardReducer(state, { type: 'SET_ROWS', payload: [{ query: 'Pikachu', identifiers: { name: 'Pikachu', set: 'swsh12', number: '25' } }] });
+  assert.deepStrictEqual(state.rows[0].identifiers, { name: 'Pikachu', set: 'swsh12', number: '25' }, 'SET_ROWS should preserve identifiers');
+
+  // Test APPEND_ROWS appends to the end and preserves ids
+  const firstAppend: Partial<CardRow>[] = [{ id: 'custom-id-1', query: 'Lightning Bolt', quantity: 4, providerId: 'scryfall', identifiers: { name: 'Lightning Bolt', set: 'WAR', number: '35' } }];
+  state = cardReducer(state, { type: 'APPEND_ROWS', payload: firstAppend });
+  assert.strictEqual(state.rows.length, 2, 'APPEND_ROWS should append rows');
+  assert.strictEqual(state.rows[1].id, 'custom-id-1', 'APPEND_ROWS should keep provided ids');
+  assert.deepStrictEqual(state.rows[1].identifiers, { name: 'Lightning Bolt', set: 'WAR', number: '35' }, 'APPEND_ROWS should preserve identifiers');
+
+  // Test APPEND_ROWS generates ids when missing and adds history
+  const historyBeforeAppend = state.history.length;
+  state = cardReducer(state, { type: 'APPEND_ROWS', payload: [{ query: 'Blue-Eyes White Dragon', providerId: 'yugioh' }] });
+  assert.strictEqual(state.rows.length, 3, 'APPEND_ROWS should append second batch');
+  assert.ok(state.rows[2].id.startsWith('row-'), 'APPEND_ROWS should generate an id when missing');
+  assert.strictEqual(state.rows[2].providerId, 'yugioh', 'APPEND_ROWS should set providerId');
+  assert.strictEqual(state.rows[2].quantity, 1, 'APPEND_ROWS should default quantity to 1');
+  assert.strictEqual(state.history.length, historyBeforeAppend + 1, 'APPEND_ROWS should add to history');
 
   console.log('All cardReducer tests passed!');
 }
