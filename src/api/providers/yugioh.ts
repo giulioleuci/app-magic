@@ -11,7 +11,7 @@ const normalizeYugiohData = (card: any, matchedPrint?: YuGiOhPrint | null): Norm
     set: print?.set_name || '',
     setCode: print?.set_code || '',
     artist: '',
-    image_uris: { front: card?.card_images?.[0]?.image_url_cropped || '' },
+    image_uris: { front: card?.card_images?.[0]?.image_url || '' },
     is_dfc: false,
     url: card.ygoprodeck_url,
   };
