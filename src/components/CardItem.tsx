@@ -75,8 +75,9 @@ export default function CardItem({ row }: CardItemProps) {
       const options = {
         scryfall: row.scryfallSearchOptions,
         pokemontcg: row.pokemonTcgSearchOptions,
+        yugioh: row.yugiohSearchOptions,
       };
-      const searchResults = await search(row.providerId, row.query, options);
+      const searchResults = await search(row.providerId, row.query, options, row.identifiers);
       if (searchResults && searchResults.length === 1) {
           dispatch({ type: 'SET_CARD_DATA', payload: { id: row.id, card: searchResults[0], searchResults: [searchResults[0]] } });
       } else if (searchResults && searchResults.length > 1) {

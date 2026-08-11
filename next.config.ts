@@ -29,6 +29,12 @@ const nextConfig: NextConfig = {
         hostname: 'cards.scryfall.io',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.ygoprodeck.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

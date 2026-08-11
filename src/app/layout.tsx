@@ -24,8 +24,8 @@ export default function RootLayout({
     script-src 'self' 'unsafe-inline' 'unsafe-eval';
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
-    img-src 'self' blob: data: https://cards.scryfall.io https://placehold.co https://picsum.photos https://images.pokemontcg.io;
-    connect-src 'self' https://api.scryfall.com https://api.pokemontcg.io https://cards.scryfall.io https://images.pokemontcg.io https://placehold.co https://picsum.photos;
+    img-src 'self' blob: data: https://cards.scryfall.io https://placehold.co https://picsum.photos https://images.pokemontcg.io https://images.ygoprodeck.com;
+    connect-src 'self' https://api.scryfall.com https://api.pokemontcg.io https://db.ygoprodeck.com https://cards.scryfall.io https://images.pokemontcg.io https://images.ygoprodeck.com https://placehold.co https://picsum.photos;
     frame-src 'none';
     object-src 'none';
     base-uri 'self';
