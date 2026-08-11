@@ -68,18 +68,22 @@ export default function AppHeader() {
       return;
     }
 
-    const exportData = state.rows.map(({ query, quantity, providerId, card }) => ({
+    const exportData = state.rows.map(({ query, quantity, providerId, card, identifiers }) => ({
       query,
       quantity,
       providerId,
       cardId: card?.id || '',
       cardName: card?.name || '',
       cardSet: card?.set || '',
+      cardSetCode: card?.setCode || '',
+      cardNumber: card?.number || '',
       cardArtist: card?.artist || '',
       cardImageFront: card?.image_uris.front || '',
       cardImageBack: card?.image_uris.back || '',
       cardIsDfc: card?.is_dfc || false,
       cardUrl: card?.url || '',
+      idSet: identifiers?.set || '',
+      idNumber: identifiers?.number || '',
     }));
     const XLSX = await import('xlsx');
     const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -118,6 +122,8 @@ export default function AppHeader() {
                   id: r.cardId,
                   name: r.cardName,
                   set: r.cardSet,
+                  setCode: r.cardSetCode,
+                  number: r.cardNumber,
                   artist: r.cardArtist,
                   image_uris: {
                     front: r.cardImageFront,
@@ -128,11 +134,12 @@ export default function AppHeader() {
                 }
               }
 
-              return { 
-                query: r.query, 
+              return {
+                query: r.query,
                 quantity: r.quantity,
                 providerId: r.providerId,
                 card: card,
+                identifiers: r.idSet || r.idNumber ? { name: r.query, set: r.idSet, number: r.idNumber } : undefined,
                 status: card ? 'found' : 'idle',
               };
             });
