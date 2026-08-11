@@ -27,6 +27,7 @@ export const it = {
   providers: {
     scryfall: 'Scryfall',
     pokemontcg: 'Pokemon TCG',
+    yugioh: 'Yu-Gi-Oh!',
   },
   loadingModal: {
     slowServiceWarning: 'Questo servizio è lento, la ricerca può richiedere diversi secondi. Attendi...',
