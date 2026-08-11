@@ -1,6 +1,6 @@
 
 "use client";
-import { Plus, Search, FileDown, Printer, FileUp, Languages, Undo2, Redo2 } from "lucide-react";
+import { Plus, Search, FileDown, Printer, FileUp, FilePlus, Languages, Undo2, Redo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCardContext } from "@/context/CardContext";
 import { useSearchRows } from "@/hooks/useSearchRows";
@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import SuccessFeedback from "./SuccessFeedback";
+import DeckListImportDialog from "./DeckListImportDialog";
 
 export default function AppHeader() {
   const { state, dispatch, undo, redo, canUndo, canRedo } = useCardContext();
@@ -31,6 +32,7 @@ export default function AppHeader() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t, setLanguage, language } = useLanguage();
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isDeckImportOpen, setIsDeckImportOpen] = useState(false);
 
   const handleAddRow = () => {
     dispatch({ type: 'ADD_ROW' });
@@ -185,6 +187,7 @@ export default function AppHeader() {
           <Button onClick={handleAddRow}><Plus /> {t('header.addCard')}</Button>
           <Button onClick={handleSearchAll} variant="secondary"><Search /> {t('header.searchAll')}</Button>
           <Button onClick={handleImportClick} variant="secondary"><FileUp /> {t('header.import')}</Button>
+          <Button onClick={() => setIsDeckImportOpen(true)} variant="secondary"><FilePlus /> {t('header.importDeck')}</Button>
           <Button onClick={handleExport} variant="secondary"><FileDown /> {t('header.export')}</Button>
           <Button onClick={handlePrint} variant="outline"><Printer /> {t('header.printPdf')}</Button>
           <DropdownMenu>
@@ -206,6 +209,9 @@ export default function AppHeader() {
             className="hidden"
           />
         </div>
+        {isDeckImportOpen && (
+          <DeckListImportDialog isOpen onClose={() => setIsDeckImportOpen(false)} />
+        )}
       </header>
       <SuccessFeedback show={showSuccess} onComplete={() => setShowSuccess(false)} />
     </>
